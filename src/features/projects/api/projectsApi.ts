@@ -1,6 +1,6 @@
 import { httpClient } from '../../../shared/lib/httpClient'
 import type { Project } from '../types'
 
-export function fetchProjects(signal?: AbortSignal): Promise<Project[]> {
+export async function fetchProjects(signal?: AbortSignal): Promise<Project[]> {
   return httpClient<Project[]>('/projects', { signal })
 }
