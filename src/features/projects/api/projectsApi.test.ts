@@ -1,6 +1,7 @@
 import { describe, it, vi, expect } from 'vitest'
 import { fetchProjects } from './projectsApi'
 import type { Project } from '../types'
+import { ApiError } from '../../../shared/lib/httpClient'
 
 describe('fetchProjects', () => {
   const projects: Project[] = [
@@ -21,5 +22,20 @@ describe('fetchProjects', () => {
     const result = await fetchProjects()
 
     expect(result).toEqual(projects)
+  })
+
+  it('lève une API error 500 quand le serveur répond 500', async () => {
+    const fakeFetch = vi.fn()
+    vi.stubGlobal(
+      'fetch',
+      fakeFetch.mockResolvedValue({
+        status: 500,
+        ok: false,
+      }),
+    )
+
+    const promise = fetchProjects()
+    await expect(promise).rejects.toBeInstanceOf(ApiError)
+    await expect(promise).rejects.toHaveProperty('status', 500)
   })
 })
