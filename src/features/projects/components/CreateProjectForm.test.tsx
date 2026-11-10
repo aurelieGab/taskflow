@@ -3,12 +3,12 @@ import { screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 
 import { CreateProjectForm } from './CreateProjectForm'
-import { renderWithQueryClient } from '../../../test/renderWithQueryClient'
+import { renderWithProviders } from '../../../test/renderWithProviders'
 
 describe('CreateProjectForm', () => {
   it('vide le formulaire après la création d’un projet', async () => {
     const user = userEvent.setup()
-    renderWithQueryClient(<CreateProjectForm />)
+    renderWithProviders(<CreateProjectForm />)
 
     const nameInput = screen.getByLabelText('Nom')
     await user.type(nameInput, 'Test Input')
