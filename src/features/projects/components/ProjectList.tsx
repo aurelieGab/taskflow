@@ -1,4 +1,5 @@
 import { useProjects } from '../hooks/useProjects'
+import { CreateProjectForm } from './CreateProjectForm'
 
 export function ProjectList() {
   const projects = useProjects()
@@ -7,10 +8,13 @@ export function ProjectList() {
   if (projects.isError) return <p role="alert">Impossible de charger les projets</p>
   if (projects.data.length === 0) return <p>Aucun projet pour l’instant</p>
   return (
-    <ul>
-      {projects.data.map((project) => (
-        <li key={project.id}>{project.name}</li>
-      ))}
-    </ul>
+    <div>
+      <CreateProjectForm />
+      <ul>
+        {projects.data.map((project) => (
+          <li key={project.id}>{project.name}</li>
+        ))}
+      </ul>
+    </div>
   )
 }

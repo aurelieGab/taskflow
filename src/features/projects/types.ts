@@ -4,3 +4,5 @@ export type Project = {
   description: string
   createdAt: string
 }
+
+export type CreateProjectInput = Pick<Project, 'name' | 'description'>
