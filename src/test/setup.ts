@@ -1,5 +1,12 @@
 import '@testing-library/jest-dom/vitest'
-import { afterEach } from 'vitest'
+import { afterEach, beforeAll, afterAll } from 'vitest'
 import { cleanup } from '@testing-library/react'
 
-afterEach(() => cleanup())
+import { server } from '../mocks/node'
+
+beforeAll(() => server.listen({ onUnhandledFrame: 'error' }))
+afterEach(() => {
+  cleanup()
+  server.resetHandlers()
+})
+afterAll(() => server.close())
