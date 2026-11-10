@@ -1,7 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
+import App from './app/App.tsx'
+import { Providers } from './app/providers.tsx'
 
 async function enableMocking() {
   const shouldMock = import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCKS === 'true'
@@ -16,7 +17,9 @@ async function enableMocking() {
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <App />
+      <Providers>
+        <App />
+      </Providers>
     </StrictMode>,
   )
 })
