@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw/http'
-import type { CreateProjectInput, Project } from '../features/projects/types'
+import type { Project } from '../features/projects/types'
+import type { CreateProjectInput } from '../features/projects/schema'
 
 const projects: Project[] = [
   { id: '1', name: 'TaskFlow 1', description: 'Mon projet 1', createdAt: '2026-11-07' },
