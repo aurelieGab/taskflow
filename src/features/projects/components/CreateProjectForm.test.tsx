@@ -15,4 +15,16 @@ describe('CreateProjectForm', () => {
     await user.click(screen.getByRole('button', { name: 'Créer' }))
     await waitFor(() => expect(nameInput).toHaveValue(''))
   })
+
+  it('affiche une erreur si on envoie le formulaire sans nom', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<CreateProjectForm />)
+    const nameInput = screen.getByLabelText('Nom')
+
+    await user.click(screen.getByRole('button', { name: 'Créer' }))
+
+    expect(await screen.findByText('Le nom est obligatoire')).toBeInTheDocument()
+    expect(nameInput).toHaveAttribute('aria-invalid', 'true')
+    expect(nameInput).toHaveAccessibleDescription('Le nom est obligatoire')
+  })
 })
