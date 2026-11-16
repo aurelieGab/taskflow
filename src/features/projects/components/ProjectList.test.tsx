@@ -35,9 +35,7 @@ describe('ProjectList', () => {
 
   it('chaque projet mène vers la page avec son id correspondant', async () => {
     renderWithProviders(<ProjectList />)
-    expect(await screen.findByRole('link', { name: 'TaskFlow 1' })).toHaveAttribute(
-      'href',
-      '/projects/1',
-    )
+    const title = await screen.findByRole('heading', { name: 'TaskFlow 1' })
+    expect(title.closest('a')).toHaveAttribute('href', '/projects/1')
   })
 })
