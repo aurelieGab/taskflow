@@ -1,5 +1,8 @@
 import { useCreateProject } from '../hooks/useCreateProject'
 
+const inputClassName =
+  'w-full rounded-md border border-slate-200 p-2 focus:ring-2 focus:ring-blue-500 outline-hidden user-invalid:border-red-500'
+
 export function CreateProjectForm() {
   const mutation = useCreateProject()
 
@@ -26,19 +29,34 @@ export function CreateProjectForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="projectName">Nom</label>
-        <input id="projectName" name="projectName" required />
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-6 rounded-lg border border-slate-200 bg-white p-4"
+    >
+      <div className="flex flex-col gap-1">
+        <label htmlFor="projectName" className="text-sm font-bold">
+          Nom
+        </label>
+        <input id="projectName" name="projectName" required className={inputClassName} />
       </div>
-      <div>
-        <label htmlFor="projectDescription">Description</label>
-        <input id="projectDescription" name="projectDescription" />
+      <div className="flex flex-col gap-1">
+        <label htmlFor="projectDescription" className="text-sm font-bold">
+          Description
+        </label>
+        <input id="projectDescription" name="projectDescription" className={inputClassName} />
       </div>
-      <button disabled={mutation.isPending} type="submit">
+      <button
+        disabled={mutation.isPending}
+        type="submit"
+        className="cursor-pointer self-center rounded-md bg-blue-800 px-4 py-2 text-white enabled:hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50"
+      >
         {mutation.isPending ? 'Création...' : 'Créer'}
       </button>
-      {mutation.isError && <p role="alert">Impossible de créer le projet.</p>}
+      {mutation.isError && (
+        <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
+          Impossible de créer le projet.
+        </p>
+      )}
     </form>
   )
 }
