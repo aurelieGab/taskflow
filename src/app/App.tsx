@@ -1,14 +1,6 @@
-import './App.css'
-import { ProjectList } from '../features/projects/components/ProjectList'
+import { RouterProvider } from 'react-router'
+import { router } from './router'
 
-function App() {
-  return (
-    <>
-      <section id="center">
-        <ProjectList />
-      </section>
-    </>
-  )
+export function App() {
+  return <RouterProvider router={router} />
 }
-
-export default App

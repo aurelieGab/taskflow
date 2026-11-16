@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { renderWithQueryClient } from '../../../test/renderWithQueryClient'
+import { renderWithProviders } from '../../../test/renderWithProviders'
 import { ProjectList } from './ProjectList'
 import { screen } from '@testing-library/react'
 import { http, HttpResponse } from 'msw/http'
@@ -7,7 +7,7 @@ import { server } from '../../../mocks/node'
 
 describe('ProjectList', () => {
   it('affiche les noms des projets', async () => {
-    renderWithQueryClient(<ProjectList />)
+    renderWithProviders(<ProjectList />)
     expect(await screen.findByText('TaskFlow 1')).toBeInTheDocument()
   })
 
@@ -18,7 +18,7 @@ describe('ProjectList', () => {
       }),
     )
 
-    renderWithQueryClient(<ProjectList />)
+    renderWithProviders(<ProjectList />)
     expect(await screen.findByRole('alert')).toHaveTextContent('Impossible de charger les projets')
   })
 
@@ -29,7 +29,13 @@ describe('ProjectList', () => {
       }),
     )
 
-    renderWithQueryClient(<ProjectList />)
+    renderWithProviders(<ProjectList />)
     expect(await screen.findByText('Aucun projet pour l’instant')).toBeInTheDocument()
+  })
+
+  it('chaque projet mène vers la page avec son id correspondant', async () => {
+    renderWithProviders(<ProjectList />)
+    const title = await screen.findByRole('heading', { name: 'TaskFlow 1' })
+    expect(title.closest('a')).toHaveAttribute('href', '/projects/1')
   })
 })
