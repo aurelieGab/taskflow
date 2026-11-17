@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { renderWithProviders } from '../../../test/renderWithProviders'
 import { ProjectList } from './ProjectList'
 import { screen } from '@testing-library/react'
+import { userEvent } from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw/http'
 import { server } from '../../../mocks/node'
 
@@ -37,5 +38,16 @@ describe('ProjectList', () => {
     renderWithProviders(<ProjectList />)
     const title = await screen.findByRole('heading', { name: 'TaskFlow 1' })
     expect(title.closest('a')).toHaveAttribute('href', '/projects/1')
+  })
+
+  it('filtre les projets selon la recherche', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<ProjectList />)
+    expect(await screen.findByText('TaskFlow 1')).toBeInTheDocument()
+
+    const search = screen.getByRole('searchbox', { name: 'Rechercher un projet' })
+    await user.type(search, 'TaskFlow 2')
+    expect(screen.getByText('TaskFlow 2')).toBeInTheDocument()
+    expect(screen.queryByText('TaskFlow 3')).not.toBeInTheDocument()
   })
 })
