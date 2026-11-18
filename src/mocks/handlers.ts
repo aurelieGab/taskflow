@@ -2,11 +2,12 @@ import { http, HttpResponse } from 'msw/http'
 import type { Project } from '../features/projects/types'
 import type { CreateProjectInput } from '../features/projects/schema'
 
-const projects: Project[] = [
-  { id: '1', name: 'TaskFlow 1', description: 'Mon projet 1', createdAt: '2026-11-07' },
-  { id: '2', name: 'TaskFlow 2', description: 'Mon projet 2', createdAt: '2026-11-08' },
-  { id: '3', name: 'TaskFlow 3', description: 'Mon projet 3', createdAt: '2026-11-09' },
-]
+const projects: Project[] = Array.from({ length: 25 }, (_, i) => ({
+  id: String(i + 1),
+  name: `TaskFlow ${i + 1}`,
+  description: `Description du projet ${i + 1}`,
+  createdAt: new Date(2026, 0, i + 1).toISOString(),
+}))
 
 export const handlers = [
   http.get(`${import.meta.env.VITE_API_URL}/projects`, () => {
