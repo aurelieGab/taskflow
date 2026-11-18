@@ -7,6 +7,7 @@ export function ProjectList() {
   const projects = useProjects()
   const [searchParams, setSearchParams] = useSearchParams()
   const search = searchParams.get('q') ?? ''
+  const sort = searchParams.get('sort') ?? 'recent'
 
   if (projects.isPending)
     return (
@@ -39,21 +40,56 @@ export function ProjectList() {
     project.name.toLowerCase().includes(search.trim().toLowerCase()),
   )
 
+  const sortedProjects = filteredProjects.toSorted((a, b) => {
+    if (sort === 'name-asc') return a.name.localeCompare(b.name, undefined, { numeric: true })
+    if (sort === 'name-desc') return b.name.localeCompare(a.name, undefined, { numeric: true })
+    if (sort === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  })
+
+  const updateSearchParams = (name: string, value: string, replace = false) => {
+    setSearchParams(
+      (prev) => {
+        if (value) prev.set(name, value)
+        else prev.delete(name)
+        return prev
+      },
+      { replace },
+    )
+  }
+
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <label htmlFor="search" className="text-sm font-bold">
-          Rechercher un projet
-        </label>
-        <input
-          id="search"
-          type="search"
-          value={search}
-          onChange={(e) => setSearchParams({ q: e.target.value }, { replace: true })}
-          className="w-full rounded-md border border-slate-200 p-2 outline-hidden focus:ring-2 focus:ring-blue-500"
-        />
+      <div className="flex flex-col gap-4 md:flex-row">
+        <div className="flex flex-1 flex-col gap-1">
+          <label htmlFor="search" className="text-sm font-bold">
+            Rechercher un projet
+          </label>
+          <input
+            id="search"
+            type="search"
+            value={search}
+            onChange={(e) => updateSearchParams('q', e.target.value, true)}
+            className="h-11 w-full rounded-md border border-slate-200 p-2 outline-hidden focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="sort" className="text-sm font-bold">
+            Trier par
+          </label>
+          <select
+            id="sort"
+            onChange={(e) => updateSearchParams('sort', e.target.value)}
+            value={sort}
+            className="h-11 rounded-md border border-slate-200 p-2 outline-hidden focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="recent">Plus récents</option>
+            <option value="oldest">Plus anciens</option>
+            <option value="name-asc">Nom (A → Z)</option>
+            <option value="name-desc">Nom (Z → A)</option>
+          </select>
+        </div>
       </div>
-
       <p role="status" className="sr-only">
         {filteredProjects.length}{' '}
         {filteredProjects.length > 1 ? 'projets trouvés' : 'projet trouvé'}
@@ -64,7 +100,7 @@ export function ProjectList() {
         </p>
       ) : (
         <ul className={gridClassName}>
-          {filteredProjects.map((project) => (
+          {sortedProjects.map((project) => (
             <li key={project.id}>
               <Link
                 to={`/projects/${project.id}`}

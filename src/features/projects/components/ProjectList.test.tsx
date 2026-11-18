@@ -50,4 +50,19 @@ describe('ProjectList', () => {
     expect(screen.getByText('TaskFlow 2')).toBeInTheDocument()
     expect(screen.queryByText('TaskFlow 3')).not.toBeInTheDocument()
   })
+
+  it('trie les projets par nom, en tenant compte des numéros', async () => {
+    const user = userEvent.setup()
+    renderWithProviders(<ProjectList />)
+    expect(await screen.findByText('TaskFlow 1')).toBeInTheDocument()
+
+    const select = screen.getByRole('combobox', { name: 'Trier par' })
+
+    await user.selectOptions(select, 'Nom (A → Z)')
+
+    const titles = screen.getAllByRole('heading')
+
+    expect(titles[0]?.textContent).toBe('TaskFlow 1')
+    expect(titles[1]?.textContent).toBe('TaskFlow 2')
+  })
 })
