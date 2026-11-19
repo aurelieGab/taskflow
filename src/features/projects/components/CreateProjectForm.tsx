@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCreateProject } from '../hooks/useCreateProject'
 import { createProjectSchema, type CreateProjectInput } from '../schema'
+import { Button } from '../../../shared/ui/button'
 
 const inputClassName =
   'w-full rounded-md border border-slate-200 p-2 focus:ring-2 focus:ring-blue-500 outline-hidden aria-[invalid=true]:border-red-500'
@@ -66,13 +67,9 @@ export function CreateProjectForm() {
           </p>
         )}
       </div>
-      <button
-        disabled={mutation.isPending}
-        type="submit"
-        className="cursor-pointer self-center rounded-md bg-blue-800 px-4 py-2 text-white enabled:hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50"
-      >
+      <Button disabled={mutation.isPending} type="submit" className="self-center">
         {mutation.isPending ? 'Création...' : 'Créer'}
-      </button>
+      </Button>
       {mutation.isError && (
         <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">
           Impossible de créer le projet.
