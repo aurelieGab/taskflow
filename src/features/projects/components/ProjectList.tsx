@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from 'react-router'
 import { useProjects } from '../hooks/useProjects'
+import { Button } from '../../../shared/ui/button'
 
 const PAGE_SIZE = 6
 const gridClassName = 'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'
@@ -123,25 +124,24 @@ export function ProjectList() {
           </ul>
           {totalPages > 1 && (
             <nav className="flex items-center justify-between" aria-label="Pagination des projets">
-              <button
-                type="button"
-                className="cursor-pointer rounded-md bg-blue-800 px-4 py-2 text-white enabled:hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50"
+              <Button
+                variant="secondary"
                 onClick={() => updateSearchParams('page', page - 1 === 1 ? '' : String(page - 1))}
                 disabled={page === 1}
               >
                 Précédent
-              </button>
+              </Button>
               <p>
                 Page {page} sur {totalPages}
               </p>
-              <button
-                type="button"
-                className="cursor-pointer rounded-md bg-blue-800 px-4 py-2 text-white enabled:hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50"
+
+              <Button
+                variant="secondary"
                 onClick={() => updateSearchParams('page', String(page + 1))}
                 disabled={page === totalPages}
               >
                 Suivant
-              </button>
+              </Button>
             </nav>
           )}
         </div>
