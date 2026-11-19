@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from 'react-router'
 import { useProjects } from '../hooks/useProjects'
 
+const PAGE_SIZE = 6
 const gridClassName = 'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'
 
 export function ProjectList() {
@@ -50,6 +51,7 @@ export function ProjectList() {
   const updateSearchParams = (name: string, value: string, replace = false) => {
     setSearchParams(
       (prev) => {
+        if (name !== 'page') prev.delete('page')
         if (value) prev.set(name, value)
         else prev.delete(name)
         return prev
@@ -57,6 +59,12 @@ export function ProjectList() {
       { replace },
     )
   }
+
+  const totalPages = Math.max(1, Math.ceil(sortedProjects.length / PAGE_SIZE))
+  const rawPage = Number(searchParams.get('page') ?? 1)
+  const validPage = Number.isInteger(rawPage) ? rawPage : 1
+  const page = Math.min(Math.max(validPage, 1), totalPages)
+  const pagedProjects = sortedProjects.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   return (
     <div className="flex flex-col gap-8">
@@ -99,19 +107,44 @@ export function ProjectList() {
           Aucun projet ne correspond à "{search}"
         </p>
       ) : (
-        <ul className={gridClassName}>
-          {sortedProjects.map((project) => (
-            <li key={project.id}>
-              <Link
-                to={`/projects/${project.id}`}
-                className="block rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+        <div className="flex flex-col gap-6">
+          <ul className={gridClassName}>
+            {pagedProjects.map((project) => (
+              <li key={project.id}>
+                <Link
+                  to={`/projects/${project.id}`}
+                  className="block rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:border-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                >
+                  <h2 className="text-lg font-bold">{project.name}</h2>
+                  <p className="text-sm text-slate-500">{project.description}</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {totalPages > 1 && (
+            <nav className="flex items-center justify-between" aria-label="Pagination des projets">
+              <button
+                type="button"
+                className="cursor-pointer rounded-md bg-blue-800 px-4 py-2 text-white enabled:hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => updateSearchParams('page', page - 1 === 1 ? '' : String(page - 1))}
+                disabled={page === 1}
               >
-                <h2 className="text-lg font-bold">{project.name}</h2>
-                <p className="text-sm text-slate-500">{project.description}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
+                Précédent
+              </button>
+              <p>
+                Page {page} sur {totalPages}
+              </p>
+              <button
+                type="button"
+                className="cursor-pointer rounded-md bg-blue-800 px-4 py-2 text-white enabled:hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => updateSearchParams('page', String(page + 1))}
+                disabled={page === totalPages}
+              >
+                Suivant
+              </button>
+            </nav>
+          )}
+        </div>
       )}
     </div>
   )
