@@ -3,10 +3,12 @@ import { afterEach, beforeAll, afterAll } from 'vitest'
 import { cleanup } from '@testing-library/react'
 
 import { server } from '../mocks/node'
+import { resetSession } from '../mocks/handlers'
 
 beforeAll(() => server.listen({ onUnhandledFrame: 'error' }))
 afterEach(() => {
   cleanup()
   server.resetHandlers()
+  resetSession()
 })
 afterAll(() => server.close())
