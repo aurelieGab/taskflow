@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw/http'
-import type { Project } from '../features/projects/types'
-import type { CreateProjectInput } from '../features/projects/schema'
-import type { User } from '../features/auth/types'
+import type { Project } from '@/features/projects/types'
+import type { CreateProjectInput } from '@/features/projects/schema'
+import type { User } from '@/features/auth/types'
 
 const API = import.meta.env.VITE_API_URL
 

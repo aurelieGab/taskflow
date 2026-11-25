@@ -1,10 +1,10 @@
 import { createBrowserRouter, Navigate } from 'react-router'
-import { ProjectsPage } from '../routes/ProjectsPage'
-import { ProjectDetailPage } from '../routes/ProjectDetailPage'
-import { NotFoundPage } from '../routes/NotFoundPage'
+import { ProjectsPage } from '@/routes/ProjectsPage'
+import { ProjectDetailPage } from '@/routes/ProjectDetailPage'
+import { NotFoundPage } from '@/routes/NotFoundPage'
 import { Layout } from './Layout'
 import { ProtectedRoute } from './ProtectedRoute'
-import { LoginPage } from '../routes/LoginPage'
+import { LoginPage } from '@/routes/LoginPage'
 
 export const router = createBrowserRouter([
   {

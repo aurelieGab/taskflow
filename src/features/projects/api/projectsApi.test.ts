@@ -1,7 +1,7 @@
 import { describe, it, vi, expect } from 'vitest'
 import { fetchProjects } from './projectsApi'
 import type { Project } from '../types'
-import { ApiError } from '../../../shared/lib/httpClient'
+import { ApiError } from '@/shared/lib/httpClient'
 
 describe('fetchProjects', () => {
   const projects: Project[] = [

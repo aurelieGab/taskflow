@@ -3,8 +3,8 @@ import { loginSchema, type LoginInput } from '../schema'
 import { useForm } from 'react-hook-form'
 import { useLogin } from '../hooks/useLogin'
 import { useNavigate } from 'react-router'
-import { Button } from '../../../shared/ui/button'
-import { ApiError } from '../../../shared/lib/httpClient'
+import { Button } from '@/shared/ui/button'
+import { ApiError } from '@/shared/lib/httpClient'
 
 const inputClassName =
   'w-full rounded-md border border-slate-200 p-2 focus:ring-2 focus:ring-blue-500 outline-hidden aria-[invalid=true]:border-red-500'

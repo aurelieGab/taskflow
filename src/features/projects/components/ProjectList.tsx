@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from 'react-router'
 import { useProjects } from '../hooks/useProjects'
-import { Button } from '../../../shared/ui/button'
+import { Button } from '@/shared/ui/button'
 
 const PAGE_SIZE = 6
 const gridClassName = 'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'

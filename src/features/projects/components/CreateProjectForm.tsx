@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCreateProject } from '../hooks/useCreateProject'
 import { createProjectSchema, type CreateProjectInput } from '../schema'
-import { Button } from '../../../shared/ui/button'
+import { Button } from '@/shared/ui/button'
 
 const inputClassName =
   'w-full rounded-md border border-slate-200 p-2 focus:ring-2 focus:ring-blue-500 outline-hidden aria-[invalid=true]:border-red-500'

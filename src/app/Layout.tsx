@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet } from 'react-router'
-import { useMe } from '../features/auth/hooks/useMe'
-import { Button, buttonVariants } from '../shared/ui/button'
-import { useLogout } from '../features/auth/hooks/useLogout'
+import { useMe } from '@/features/auth/hooks/useMe'
+import { Button, buttonVariants } from '@/shared/ui/button'
+import { useLogout } from '@/features/auth/hooks/useLogout'
 
 export function Layout() {
   const me = useMe()

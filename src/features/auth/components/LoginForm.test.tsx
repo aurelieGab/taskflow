@@ -4,9 +4,9 @@ import { screen } from '@testing-library/react'
 import { LoginForm } from './LoginForm'
 import userEvent from '@testing-library/user-event'
 
-import { renderWithProviders } from '../../../test/renderWithProviders'
+import { renderWithProviders } from '@/test/renderWithProviders'
 
-import { LoginPage } from '../../../routes/LoginPage'
+import { LoginPage } from '@/routes/LoginPage'
 import { Route, Routes } from 'react-router'
 
 describe('LoginForm', () => {
