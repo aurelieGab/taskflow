@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw/http'
 import type { Project } from '@/features/projects/types'
 import type { CreateProjectInput } from '@/features/projects/schema'
 import type { User } from '@/features/auth/types'
+import type { Task } from '@/features/tasks/types'
 
 const API = import.meta.env.VITE_API_URL
 
@@ -12,7 +13,46 @@ const projects: Project[] = Array.from({ length: 25 }, (_, i) => ({
   createdAt: new Date(2026, 0, i + 1).toISOString(),
 }))
 
-let currentUser: User | null = null
+const tasks: Task[] = [
+  {
+    id: '1',
+    projectId: '25',
+    title: 'Créer la maquette',
+    done: true,
+    createdAt: '2026-11-03T09:00:00.000Z',
+  },
+  {
+    id: '2',
+    projectId: '25',
+    title: 'Écrire les tests',
+    done: false,
+    createdAt: '2026-11-05T14:30:00.000Z',
+  },
+  {
+    id: '3',
+    projectId: '24',
+    title: 'Configurer le router',
+    done: false,
+    createdAt: '2026-11-10T08:15:00.000Z',
+  },
+  {
+    id: '4',
+    projectId: '23',
+    title: 'Créer le composant',
+    done: false,
+    createdAt: '2026-11-12T16:45:00.000Z',
+  },
+  {
+    id: '5',
+    projectId: '22',
+    title: 'Appeler API',
+    done: false,
+    createdAt: '2026-11-18T11:00:00.000Z',
+  },
+]
+
+// let currentUser: User | null = null
+let currentUser: User | null = { id: '1', email: 'aurelie@taskflow.dev', name: 'Aurélie' }
 
 const users = [
   {
@@ -27,6 +67,7 @@ export const handlers = [
   http.get(`${API}/projects`, () => {
     return HttpResponse.json(projects)
   }),
+
   http.post(`${API}/projects`, async ({ request }) => {
     const body = (await request.json()) as CreateProjectInput
 
@@ -64,6 +105,15 @@ export const handlers = [
   http.post(`${API}/logout`, () => {
     currentUser = null
     return new HttpResponse(null, { status: 204 })
+  }),
+
+  http.get(`${API}/projects/:projectId/tasks`, ({ params }) => {
+    const isExistingProject = projects.some((project) => project.id === params.projectId)
+    if (!isExistingProject)
+      return HttpResponse.json({ message: "Le projet n'existe pas" }, { status: 404 })
+
+    const projectTasks = tasks.filter((task) => task.projectId === params.projectId)
+    return HttpResponse.json(projectTasks)
   }),
 ]
 
