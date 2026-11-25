@@ -11,4 +11,7 @@ export default defineConfig({
     unstubGlobals: true,
     unstubEnvs: true,
   },
+  resolve: {
+    tsconfigPaths: true,
+  },
 })
