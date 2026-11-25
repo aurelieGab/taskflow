@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchMe } from '../api/authApi'
-import { ApiError } from '../../../shared/lib/httpClient'
+import { ApiError } from '@/shared/lib/httpClient'
 
 export function useMe() {
   return useQuery({

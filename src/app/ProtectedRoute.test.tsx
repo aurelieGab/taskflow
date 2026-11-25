@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { server } from '../mocks/node'
+import { server } from '@/mocks/node'
 import { http, HttpResponse } from 'msw/http'
-import { renderWithProviders } from '../test/renderWithProviders'
+import { renderWithProviders } from '@/test/renderWithProviders'
 import { screen } from '@testing-library/react'
 import { Route, Routes } from 'react-router'
 import { ProtectedRoute } from './ProtectedRoute'
-import { ProjectList } from '../features/projects/components/ProjectList'
+import { ProjectList } from '@/features/projects/components/ProjectList'
 
 describe('ProtectedRoute', () => {
   it("affiche la page quand l'utilisateur est connecté", async () => {

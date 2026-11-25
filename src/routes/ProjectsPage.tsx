@@ -1,5 +1,5 @@
-import { CreateProjectForm } from '../features/projects/components/CreateProjectForm'
-import { ProjectList } from '../features/projects/components/ProjectList'
+import { CreateProjectForm } from '@/features/projects/components/CreateProjectForm'
+import { ProjectList } from '@/features/projects/components/ProjectList'
 
 export function ProjectsPage() {
   return (

@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router'
-import { useMe } from '../features/auth/hooks/useMe'
+import { useMe } from '@/features/auth/hooks/useMe'
 
 export function ProtectedRoute() {
   const me = useMe()

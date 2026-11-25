@@ -1,4 +1,4 @@
-import { httpClient } from '../../../shared/lib/httpClient'
+import { httpClient } from '@/shared/lib/httpClient'
 import type { CreateProjectInput } from '../schema'
 import type { Project } from '../types'
 

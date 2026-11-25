@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { renderWithProviders } from '../../../test/renderWithProviders'
+import { renderWithProviders } from '@/test/renderWithProviders'
 import { ProjectList } from './ProjectList'
 import { screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw/http'
-import { server } from '../../../mocks/node'
+import { server } from '@/mocks/node'
 import type { Project } from '../types'
 
 describe('ProjectList', () => {

@@ -3,7 +3,7 @@ import { screen, waitFor } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
 
 import { CreateProjectForm } from './CreateProjectForm'
-import { renderWithProviders } from '../../../test/renderWithProviders'
+import { renderWithProviders } from '@/test/renderWithProviders'
 
 describe('CreateProjectForm', () => {
   it('vide le formulaire après la création d’un projet', async () => {
