@@ -1,80 +1,78 @@
 import { describe, it, expect } from 'vitest'
 import { screen } from '@testing-library/react'
-import { TaskList } from './TaskList'
-import { renderWithProviders } from '@/test/renderWithProviders'
-import type { Task } from '../types'
 import { server } from '@/mocks/node'
 import { http, HttpResponse } from 'msw/http'
+import type { Task } from '@/features/tasks/types'
+import { TaskList } from '@/features/tasks/components/TaskList'
+import { renderWithProviders } from '@/test/renderWithProviders'
 
 describe('TaskList', () => {
-  it('affiche les tâches du projet', async () => {
+  it("affiche les tâches de l'id demandé", async () => {
     const projectId = '25'
-
-    const testTasks: Task[] = [
+    const testTask: Task[] = [
       {
         id: '1',
         projectId,
-        title: 'Task test',
-        createdAt: '2026-01-01T00:00:00.000Z',
-        done: false,
+        title: 'Créer la maquette',
+        done: true,
+        createdAt: '2026-11-03T09:00:00.000Z',
       },
       {
         id: '2',
         projectId,
-        title: 'Task test 2',
-        createdAt: '2026-01-01T00:00:00.000Z',
-        done: true,
+        title: 'Écrire les tests',
+        done: false,
+        createdAt: '2026-11-06T09:00:00.000Z',
       },
     ]
-
     server.use(
-      http.get(`${import.meta.env.VITE_API_URL}/projects/${projectId}/tasks`, () =>
-        HttpResponse.json(testTasks),
-      ),
+      http.get(`${import.meta.env.VITE_API_URL}/projects/${projectId}/tasks`, () => {
+        return HttpResponse.json(testTask)
+      }),
     )
+
     renderWithProviders(<TaskList projectId={projectId} />)
 
-    expect(await screen.findByText('Task test')).toBeInTheDocument()
-    expect(await screen.findByText('Task test')).toHaveTextContent('À faire')
-    expect(await screen.findByText('Task test 2')).toHaveTextContent('Terminée')
+    expect(await screen.findByText('Créer la maquette')).toHaveTextContent('Terminée')
+    expect(await screen.findByText('Écrire les tests')).toHaveTextContent('À faire')
   })
 
-  it("affiche Aucune tâche quand le projet n'en a pas", async () => {
-    const projectId = '15'
-
+  it("affiche le message 'Impossible de charger les tâches' si l'API rencontre une erreur", async () => {
+    const projectId = '14'
     server.use(
-      http.get(`${import.meta.env.VITE_API_URL}/projects/${projectId}/tasks`, () =>
-        HttpResponse.json([]),
-      ),
+      http.get(`${import.meta.env.VITE_API_URL}/projects/${projectId}/tasks`, () => {
+        return new HttpResponse(null, { status: 500 })
+      }),
     )
+
     renderWithProviders(<TaskList projectId={projectId} />)
 
-    expect(await screen.findByText('Aucune tâche')).toBeInTheDocument()
+    expect(await screen.findByText('Impossible de charger les tâches')).toBeInTheDocument()
   })
 
-  it("une 404 affiche « Ce projet n'existe pas »", async () => {
-    const projectId = '450'
-
+  it("affiche le message 'Ce projet n'existe pas' si 404", async () => {
+    const projectId = '202'
     server.use(
-      http.get(`${import.meta.env.VITE_API_URL}/projects/${projectId}/tasks`, () =>
-        HttpResponse.json({ message: "Le projet n'existe pas" }, { status: 404 }),
-      ),
+      http.get(`${import.meta.env.VITE_API_URL}/projects/${projectId}/tasks`, () => {
+        return new HttpResponse(null, { status: 404 })
+      }),
     )
+
     renderWithProviders(<TaskList projectId={projectId} />)
 
-    expect(await screen.findByRole('alert')).toHaveTextContent("Ce projet n'existe pas")
+    expect(await screen.findByText("Ce projet n'existe pas")).toBeInTheDocument()
   })
 
-  it('une 500 affiche « Impossible de charger les tâches »', async () => {
-    const projectId = '450'
-
+  it("affiche le message 'Aucune tâche pour ce projet' si le projet n'a aucune tâche", async () => {
+    const projectId = '14'
     server.use(
-      http.get(`${import.meta.env.VITE_API_URL}/projects/${projectId}/tasks`, () =>
-        HttpResponse.json({ message: 'Internal Server Error' }, { status: 500 }),
-      ),
+      http.get(`${import.meta.env.VITE_API_URL}/projects/${projectId}/tasks`, () => {
+        return HttpResponse.json([])
+      }),
     )
+
     renderWithProviders(<TaskList projectId={projectId} />)
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Impossible de charger les tâches')
+    expect(await screen.findByText('Aucune tâche pour ce projet')).toBeInTheDocument()
   })
 })

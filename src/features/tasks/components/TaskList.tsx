@@ -9,25 +9,23 @@ type TaskListProps = {
 export function TaskList({ projectId }: TaskListProps) {
   const tasks = useTasks(projectId)
 
-  if (tasks.isPending)
+  if (tasks.isPending) {
     return (
-      <p
-        role="status"
-        className="rounded-lg border border-dashed border-slate-200 p-20 text-center text-slate-700"
-      >
-        Chargement des tâches
+      <p className="rounded-lg border border-dashed border-slate-200 p-20 text-center text-slate-700">
+        Chargement...
       </p>
     )
+  }
 
   if (tasks.isError) {
-    const errorMessage =
+    const message =
       tasks.error instanceof ApiError && tasks.error.status === 404
         ? "Ce projet n'existe pas"
         : 'Impossible de charger les tâches'
 
     return (
       <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-700">
-        {errorMessage}
+        {message}
       </p>
     )
   }
@@ -35,17 +33,17 @@ export function TaskList({ projectId }: TaskListProps) {
   if (tasks.data.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-slate-200 p-20 text-center text-slate-700">
-        Aucune tâche
+        Aucune tâche pour ce projet
       </p>
     )
   }
 
   return (
-    <ul>
+    <ul className="flex flex-col gap-2">
       {tasks.data.map((task) => (
-        <li key={task.id} className={cn(task.done && 'text-slate-500 line-through')}>
+        <li key={task.id} className={cn('text-gray-800', task.done && 'line-through')}>
           {task.title}
-          <span className="sr-only">{task.done ? 'Terminée' : 'À faire'}</span>
+          <p className="sr-only">{task.done ? 'Terminée' : 'À faire'}</p>
         </li>
       ))}
     </ul>
