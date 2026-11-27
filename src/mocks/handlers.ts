@@ -3,10 +3,26 @@ import type { Project } from '@/features/projects/types'
 import type { CreateProjectInput } from '@/features/projects/schema'
 import type { User } from '@/features/auth/types'
 import type { Task } from '@/features/tasks/types'
-import type { CreateTaskInput } from '@/features/tasks/schema'
 import type { LoginInput } from '@/features/auth/schema'
+import type { CreateTaskInput } from '@/features/tasks/schema'
 
 const API = import.meta.env.VITE_API_URL
+
+const SESSION_KEY = 'user'
+
+const saveSession = (user: User) => {
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(user))
+}
+
+const loadSession = () => {
+  const saved = sessionStorage.getItem(SESSION_KEY)
+  if (!saved) return null
+  return JSON.parse(saved) as User
+}
+
+const removeSession = () => {
+  sessionStorage.removeItem(SESSION_KEY)
+}
 
 const projects: Project[] = Array.from({ length: 25 }, (_, i) => ({
   id: String(i + 1),
@@ -53,7 +69,6 @@ const initialTasks: Task[] = [
   },
 ]
 
-let currentUser: User | null = null
 let tasks: Task[] = [...initialTasks]
 
 const users = [
@@ -93,19 +108,24 @@ export const handlers = [
 
     if (!user) return HttpResponse.json({ message: 'Identifiants invalides' }, { status: 401 })
 
-    currentUser = { id: user.id, name: user.name, email: user.email }
-    return HttpResponse.json(currentUser)
+    const sessionUser: User = { id: user.id, name: user.name, email: user.email }
+
+    saveSession(sessionUser)
+
+    return HttpResponse.json(sessionUser)
   }),
 
   //GET /me: who is connected ?
   http.get(`${API}/me`, () => {
-    if (!currentUser) return HttpResponse.json(null, { status: 401 })
-    return HttpResponse.json(currentUser)
+    const user = loadSession()
+    if (!user) return HttpResponse.json(null, { status: 401 })
+
+    return HttpResponse.json(user)
   }),
 
   // POST /logout : forget user
   http.post(`${API}/logout`, () => {
-    currentUser = null
+    removeSession()
     return new HttpResponse(null, { status: 204 })
   }),
 
@@ -125,10 +145,12 @@ export const handlers = [
     `${API}/projects/:projectId/tasks`,
     async ({ request, params }) => {
       const body = await request.json()
+
       const isExistingProject = projects.some((project) => project.id === params.projectId)
 
-      if (!isExistingProject)
-        return HttpResponse.json({ message: "le projet n'existe pas" }, { status: 404 })
+      if (!isExistingProject) {
+        return HttpResponse.json({ message: "Ce projet n'existe pas" }, { status: 404 })
+      }
 
       const newTask: Task = {
         id: crypto.randomUUID(),
@@ -146,7 +168,7 @@ export const handlers = [
 ]
 
 export function resetSession() {
-  currentUser = null
+  removeSession()
 }
 
 export function resetTasks() {
