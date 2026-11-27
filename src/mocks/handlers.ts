@@ -3,6 +3,8 @@ import type { Project } from '@/features/projects/types'
 import type { CreateProjectInput } from '@/features/projects/schema'
 import type { User } from '@/features/auth/types'
 import type { Task } from '@/features/tasks/types'
+import type { CreateTaskInput } from '@/features/tasks/schema'
+import type { LoginInput } from '@/features/auth/schema'
 
 const API = import.meta.env.VITE_API_URL
 
@@ -13,7 +15,7 @@ const projects: Project[] = Array.from({ length: 25 }, (_, i) => ({
   createdAt: new Date(2026, 0, i + 1).toISOString(),
 }))
 
-const tasks: Task[] = [
+const initialTasks: Task[] = [
   {
     id: '1',
     projectId: '25',
@@ -51,8 +53,8 @@ const tasks: Task[] = [
   },
 ]
 
-// let currentUser: User | null = null
-let currentUser: User | null = { id: '1', email: 'aurelie@taskflow.dev', name: 'Aurélie' }
+let currentUser: User | null = null
+let tasks: Task[] = [...initialTasks]
 
 const users = [
   {
@@ -68,8 +70,8 @@ export const handlers = [
     return HttpResponse.json(projects)
   }),
 
-  http.post(`${API}/projects`, async ({ request }) => {
-    const body = (await request.json()) as CreateProjectInput
+  http.post<never, CreateProjectInput>(`${API}/projects`, async ({ request }) => {
+    const body = await request.json()
 
     const newProject: Project = {
       id: crypto.randomUUID(),
@@ -84,8 +86,8 @@ export const handlers = [
   }),
 
   // POST /login check email and password
-  http.post(`${API}/login`, async ({ request }) => {
-    const { email, password } = (await request.json()) as { email: string; password: string }
+  http.post<never, LoginInput>(`${API}/login`, async ({ request }) => {
+    const { email, password } = await request.json()
 
     const user = users.find((u) => u.email === email && u.password === password)
 
@@ -107,16 +109,46 @@ export const handlers = [
     return new HttpResponse(null, { status: 204 })
   }),
 
+  // Tasks -------------------------------------------------------------
   http.get(`${API}/projects/:projectId/tasks`, ({ params }) => {
     const isExistingProject = projects.some((project) => project.id === params.projectId)
+
     if (!isExistingProject)
       return HttpResponse.json({ message: "Le projet n'existe pas" }, { status: 404 })
 
     const projectTasks = tasks.filter((task) => task.projectId === params.projectId)
+
     return HttpResponse.json(projectTasks)
   }),
+
+  http.post<{ projectId: string }, CreateTaskInput>(
+    `${API}/projects/:projectId/tasks`,
+    async ({ request, params }) => {
+      const body = await request.json()
+      const isExistingProject = projects.some((project) => project.id === params.projectId)
+
+      if (!isExistingProject)
+        return HttpResponse.json({ message: "le projet n'existe pas" }, { status: 404 })
+
+      const newTask: Task = {
+        id: crypto.randomUUID(),
+        projectId: params.projectId,
+        title: body.title,
+        done: false,
+        createdAt: new Date().toISOString(),
+      }
+
+      tasks.push(newTask)
+
+      return HttpResponse.json(newTask, { status: 201 })
+    },
+  ),
 ]
 
 export function resetSession() {
   currentUser = null
+}
+
+export function resetTasks() {
+  tasks = [...initialTasks]
 }
